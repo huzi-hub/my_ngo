@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "713975874551",
+    "project_id": "e-donation-app",
+    "storage_bucket": "e-donation-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:713975874551:android:efd89b5e43ea19bf41a4f2",
+        "android_client_info": {
+          "package_name": "com.example.my_ngo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "713975874551-kbed3htsf4dgg04pc3mk4ob669bgklen.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDr_KxwX9jA9ar62RU1BqNr0WnQ-0y3CVk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "713975874551-kbed3htsf4dgg04pc3mk4ob669bgklen.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
