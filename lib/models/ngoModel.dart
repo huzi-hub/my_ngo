@@ -34,14 +34,14 @@ class Ngos {
   String city;
 
   factory Ngos.fromJson(Map<String, dynamic> json) => Ngos(
-        ngoId: json["ngo_id"],
-        ngoName: json["ngo_name"],
-        email: json["email"],
-        password: json["password"],
-        address: json["address"],
-        contact: json["contact"],
+        ngoId: json["ngo_id"] as String,
+        ngoName: json["ngo_name"] as String,
+        email: json["email"] as String,
+        password: json["password"] as String,
+        address: json["address"] as String,
+        contact: json["contact"] as String,
         storage: json["storage"],
-        city: json["city"],
+        city: json["city"] as String,
       );
 
   Map<String, dynamic> toJson() => {

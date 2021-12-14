@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'donationHistory.dart';
 
@@ -9,51 +8,36 @@ import './myprofile.dart';
 import 'notes.dart';
 import 'Home1.dart';
 import 'EditProfile.dart';
-void main() {
-  runApp(const MyApp1());
-}
 
-class MyApp1 extends StatelessWidget {
-  const MyApp1({Key? key}) : super(key: key);
+// final List<DonationData> donations = [
+//   DonationData('Food', 2.0, 'Mon'),
+//   DonationData('Books', 5.0, 'Tue'),
+//   DonationData('food', 10.0, 'Thr'),
+//   DonationData('Clothes', 20.0, 'Fri'),
+//   DonationData('Food', 29.0, 'Sat'),
+//   DonationData('Food', 15.0, 'Sun'),
+// ];
 
+class MyApp1 extends StatefulWidget {
+  final donorId;
+  MyApp1(this.donorId);
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: HomePage(),
-    );
-  }
-}
-final List<DonationData> donations = [
-  DonationData('Food', 2.0, 'Mon'),
-  DonationData('Books', 5.0, 'Tue'),
-  DonationData('food', 10.0, 'Thr'),
-  DonationData('Clothes', 20.0, 'Fri'),
-  DonationData('Food', 29.0, 'Sat'),
-  DonationData('Food', 15.0, 'Sun'),
-];
-
-class HomePage extends StatefulWidget {
-  @override
-  _HomePageState createState() => _HomePageState();
+  _MyApp1 createState() => _MyApp1();
 }
 
-class _HomePageState extends State<HomePage> {
+class _MyApp1 extends State<MyApp1> {
   var currentPage = DrawerSections.Home1;
 
   @override
   Widget build(BuildContext context) {
     var container;
     if (currentPage == DrawerSections.Home1) {
-      container = HomePages();
+      container = HomePages(widget.donorId);
     } else if (currentPage == DrawerSections.myprofile) {
       container = EditProfile();
-
-    }
-    else if (currentPage == DrawerSections.donations) {
-      container = DonartionHistory(donations);
-    }
-      else if (currentPage == DrawerSections.notifications) {
+    } else if (currentPage == DrawerSections.donations) {
+      container = DonartionHistory(widget.donorId);
+    } else if (currentPage == DrawerSections.notifications) {
       container = NotificationsPage();
     }
     return Scaffold(
@@ -93,13 +77,11 @@ class _HomePageState extends State<HomePage> {
               currentPage == DrawerSections.myprofile ? true : false),
           menuItem(2, "Donations", Icons.dashboard,
               currentPage == DrawerSections.donations ? true : false),
-
           Divider(),
           menuItem(3, "Settings", Icons.settings_outlined,
               currentPage == DrawerSections.settings ? true : false),
           menuItem(4, "Notifications", Icons.notifications_outlined,
               currentPage == DrawerSections.notifications ? true : false),
-
         ],
       ),
     );

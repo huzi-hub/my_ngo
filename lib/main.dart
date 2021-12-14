@@ -3,6 +3,7 @@ import 'package:my_ngo/EditProfile.dart';
 import 'package:my_ngo/Login.dart';
 import 'package:my_ngo/VolunteerAppbar.dart';
 import 'package:my_ngo/VolunteerDashboard.dart';
+import 'package:my_ngo/nearbyNGOs1.dart';
 import 'package:my_ngo/ngo_reg.dart';
 import './ngoRecords.dart';
 import './chatScreen.dart';
@@ -17,20 +18,20 @@ import './nearbyNGOs.dart';
 import './ngoProfile.dart';
 import './donationHistory.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   runApp(MyApp());
 }
 
-final List<DonationData> donations = [
-  DonationData('Food', 2.0, 'Mon'),
-  DonationData('Books', 5.0, 'Tue'),
-  DonationData('food', 10.0, 'Thr'),
-  DonationData('Clothes', 20.0, 'Fri'),
-  DonationData('Food', 29.0, 'Sat'),
-  DonationData('Food', 15.0, 'Sun'),
-];
+// final List<DonationData> donations = [
+//   DonationData('Food', 2.0, 'Mon'),
+//   DonationData('Books', 5.0, 'Tue'),
+//   DonationData('food', 10.0, 'Thr'),
+//   DonationData('Clothes', 20.0, 'Fri'),
+//   DonationData('Food', 29.0, 'Sat'),
+//   DonationData('Food', 15.0, 'Sun'),
+// ];
 
 class MyApp extends StatelessWidget {
   @override

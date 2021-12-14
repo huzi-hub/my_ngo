@@ -1,6 +1,7 @@
 // ignore_for_file: file_names, use_key_in_widget_constructors, prefer_const_constructors, unnecessary_string_interpolations, sized_box_for_whitespace, camel_case_types
 
 import 'package:flutter/material.dart';
+import 'package:my_ngo/Services/donationServices.dart';
 import './donationHistory.dart';
 import './headingWidget.dart';
 
@@ -49,16 +50,16 @@ class WarehouseStorage extends StatelessWidget {
                             fontSize: 20,
                           )),
                       title: Text(
-                        donations[index].donationName,
+                        donations[index].toString(),
                         style: TextStyle(
                           fontFamily: 'Quicksand',
                           fontSize: 20,
                         ),
                       ),
-                      subtitle: Text('${donations[index].day}'),
+                      subtitle: Text('${donations[index].toString()}'),
                       trailing: Column(children: [
                         Text('Amount'),
-                        Text('${donations[index].donationAmount}')
+                        Text('${donations[index].toString()}')
                       ]),
                     ),
                   );

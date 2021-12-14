@@ -1,12 +1,14 @@
 // ignore_for_file: file_names, use_key_in_widget_constructors, prefer_const_constructors, unnecessary_string_interpolations, sized_box_for_whitespace
 
 import 'package:flutter/material.dart';
+import 'package:my_ngo/nearbyNGOs.dart';
 import 'main1.dart';
 import 'confirmDonation.dart';
 import 'nearbyNGOs1.dart';
 
 class HomePages extends StatelessWidget {
-  const HomePages({Key? key}) : super(key: key);
+  final donorId;
+  const HomePages(this.donorId);
 
   @override
   Widget build(BuildContext context) {
@@ -117,7 +119,7 @@ class HomePages extends StatelessWidget {
                                                   context,
                                                   MaterialPageRoute(
                                                       builder: (context) =>
-                                                          NearbyNGOs()));
+                                                          NearbyNgos(donorId)));
                                             },
                                           ),
                                         ],
@@ -177,7 +179,7 @@ class HomePages extends StatelessWidget {
                                                 context,
                                                 MaterialPageRoute(
                                                     builder: (context) =>
-                                                        NearbyNGOs()));
+                                                        NearbyNgos(donorId)));
                                           },
                                         )
                                       ],
@@ -240,7 +242,7 @@ class HomePages extends StatelessWidget {
                                                 context,
                                                 MaterialPageRoute(
                                                     builder: (context) =>
-                                                        NearbyNGOs()));
+                                                        NearbyNgos(donorId)));
                                           },
                                         )
                                       ],

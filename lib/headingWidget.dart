@@ -32,7 +32,7 @@ class _HeadingWidgetState extends State<HeadingWidget> {
             ),
             Container(
               alignment: Alignment.center,
-              height: 70,
+              height: MediaQuery.of(context).size.height * 0.05,
               color: Colors.white,
               child: Text(
                 widget.heading,

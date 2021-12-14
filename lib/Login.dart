@@ -157,8 +157,8 @@ class _LoginState extends State<Login> {
     var msg = jsonDecode(result.body);
     if (result.statusCode == 200) {
       if (msg[0] != null) {
-        Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => MyApp1()));
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => MyApp1(int.parse(msg[0]['user_id']))));
       }
     } else {
       SnackBar(content: Text('Invalid Username or Password!'));

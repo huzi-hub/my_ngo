@@ -1,12 +1,18 @@
-// ignore_for_file: avoid_unnecessary_containers, file_names, prefer_const_constructors
+// ignore_for_file: avoid_unnecessary_containers, file_names, prefer_const_constructors, must_be_immutable, sized_box_for_whitespace
 
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:my_ngo/nearbyNGOs.dart';
 import './headingWidget.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'main1.dart';
 
 class ConfirmDonation extends StatefulWidget {
+  int donorId;
+  int ngoId;
+
+  ConfirmDonation(this.donorId, this.ngoId);
   @override
   State<ConfirmDonation> createState() => _ConfirmDonationState();
 }
@@ -93,7 +99,7 @@ class _ConfirmDonationState extends State<ConfirmDonation> {
                     width: 10,
                   ),
                   ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () => makeDontion(),
                       child: Text(
                         'Confirm',
                         style: TextStyle(
@@ -110,19 +116,21 @@ class _ConfirmDonationState extends State<ConfirmDonation> {
     );
   }
 
-  Future dontion() async {
-    String url = 'https://edonations.000webhostapp.com/api-donations.php';
+  Future makeDontion() async {
+    String url = 'https://edonations.000webhostapp.com/api-donate.php';
     var data = {
-      'email': donation.text,
-      'password': quantity.text,
-      'note': note.text
+      'name': donation.text,
+      'quantity': quantity.text,
+      'note': note.text,
+      'user_id': widget.donorId,
+      'ngo_id': widget.ngoId
     };
     var result = await http.post(Uri.parse(url), body: jsonEncode(data));
     var msg = jsonDecode(result.body);
     if (result.statusCode == 200) {
-      if (msg[0] != null) {
-        Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => MyApp1()));
+      if (msg != null) {
+        Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => MyApp1(widget.donorId)));
       }
     } else {
       SnackBar(content: Text('Error Please Try Later!'));

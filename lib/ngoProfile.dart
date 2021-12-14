@@ -1,11 +1,15 @@
 // ignore_for_file: file_names, use_key_in_widget_constructors, prefer_const_constructors, unnecessary_string_interpolations, sized_box_for_whitespace, camel_case_types
 
 import 'package:flutter/material.dart';
+import 'package:my_ngo/models/ngoModel.dart';
 import './chatScreen.dart';
 import './confirmDonation.dart';
 import './headingWidget.dart';
 
 class NGOProfile extends StatefulWidget {
+  int donorId;
+  int ngoId;
+  NGOProfile(this.donorId, this.ngoId);
   @override
   _NGOProfileState createState() => _NGOProfileState();
 }
@@ -131,7 +135,8 @@ class _NGOProfileState extends State<NGOProfile> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => ConfirmDonation()),
+                          builder: (context) =>
+                              ConfirmDonation(widget.donorId, widget.ngoId)),
                     );
                   },
                   child: Text(

@@ -1,43 +1,46 @@
-// ignore_for_file: file_names, use_key_in_widget_constructors, prefer_const_constructors, unnecessary_string_interpolations, sized_box_for_whitespace
+// ignore_for_file: file_names
 
+import 'dart:async';
+import 'dart:convert';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:my_ngo/headingWidget.dart';
+import 'package:my_ngo/models/ngoModel.dart';
 
-import 'Services/donorServices.dart';
-import 'Services/ngoServices.dart';
-import 'models/ngoModel.dart';
+import 'ngoProfile.dart';
 
-class NearbyNGO extends StatefulWidget {
-  const NearbyNGO({Key? key}) : super(key: key);
+Future<List<Ngos>> fetchPhotos(http.Client client) async {
+  final response = await client
+      .get(Uri.parse('https://edonations.000webhostapp.com/api-ngo.php'));
 
-  @override
-  _NearbyNGOState createState() => _NearbyNGOState();
+  // Use the compute function to run parsePhotos in a separate isolate.
+  return compute(parseNgos, response.body);
 }
 
-class _NearbyNGOState extends State<NearbyNGO> {
-  List<Ngos>? _ngos;
-  Future<void> getNgos() async {
-    NGOData? ngosData; //= DonorData('abc@gmail.com', '12345678');
-    await ngosData!.getNgos().then((ngos) => _ngos = ngos.cast<Ngos>());
-  }
+// A function that converts a response body into a List<Photo>.
+List<Ngos> parseNgos(String responseBody) {
+  final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    getNgos();
-  }
+  return parsed.map<Ngos>((json) => Ngos.fromJson(json)).toList();
+}
 
+class NearbyNgos extends StatelessWidget {
+  int donorId;
+  NearbyNgos(this.donorId);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: ListView(
-        children: <Widget>[
-          SizedBox(
-            height: 40,
+        children: [
+          HeadingWidget('Nearby NGOs'),
+          const SizedBox(
+            height: 20,
           ),
           Container(
-            padding: EdgeInsets.only(left: 25, right: 25),
-            child: Text(
+            padding: const EdgeInsets.only(left: 25, right: 25),
+            child: const Text(
               'NGOs Around You',
               style: TextStyle(
                   fontFamily: 'Quicksand',
@@ -46,90 +49,128 @@ class _NearbyNGOState extends State<NearbyNGO> {
                   color: Colors.grey),
             ),
           ),
-          SizedBox(height: 10),
-          GridView.count(
-            crossAxisCount: 2,
-            primary: false,
-            crossAxisSpacing: 2.0,
-            mainAxisSpacing: 4.0,
-            shrinkWrap: true,
-            children: <Widget>[
-              buildCard(_ngos![0].ngoName, _ngos![0].address, 1),
-              buildCard('Edhi', 'Korangi#4 Karachi', 2),
-              buildCard('Edhi', 'Korangi#4 Karachi', 3),
-              buildCard('Edhi', 'Korangi#4 Karachi', 4),
-              buildCard('Edhi', 'Korangi#4 Karachi', 5),
-              buildCard('Edhi', 'Korangi#4 Karachi', 6),
-            ],
+          Container(
+            height: MediaQuery.of(context).size.height * 0.8,
+            margin: const EdgeInsets.only(top: 10),
+            child: FutureBuilder<List<Ngos>>(
+              future: fetchPhotos(http.Client()),
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return const Center(
+                    child: Text('An error has occurred!'),
+                  );
+                } else if (snapshot.hasData) {
+                  return NgoList(donorId: donorId, ngo: snapshot.data!);
+                } else {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+              },
+            ),
           ),
         ],
       ),
     );
   }
+}
 
-  // ignore: non_constant_identifier_names
-  Widget buildCard(String name, String address, int cardIndex) {
+class NgoList extends StatefulWidget {
+  const NgoList({Key? key, required this.ngo, required this.donorId})
+      : super(key: key);
+  final donorId;
+  final List<Ngos> ngo;
+
+  @override
+  State<NgoList> createState() => _NgoListState();
+}
+
+class _NgoListState extends State<NgoList> {
+  @override
+  Widget build(BuildContext context) {
+    return GridView.builder(
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+      ),
+      itemCount: widget.ngo.length,
+      itemBuilder: (context, index) {
+        //print(donorId);
+        return buildCard(widget.ngo[index].ngoName, widget.ngo[index].address,
+            int.parse(widget.ngo[index].ngoId), index);
+      },
+    );
+  }
+
+  Widget buildCard(String name, String address, int ngoId, int cardIndex) {
     return Card(
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-        elevation: 7.0,
-        child: Column(
-          children: <Widget>[
-            SizedBox(height: 12.0),
-            Stack(children: <Widget>[
-              Container(
-                height: 80.0,
-                width: 80.0,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(40.0),
-                    color: Colors.blue,
-                    image: DecorationImage(
-                        image: NetworkImage(
-                            'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl-2.jpg'))),
-              ),
-            ]),
-            SizedBox(height: 8.0),
-            Text(
-              name,
-              style: TextStyle(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+      elevation: 7.0,
+      child: Column(
+        children: <Widget>[
+          const SizedBox(height: 12.0),
+          Stack(children: <Widget>[
+            Container(
+              height: 80.0,
+              width: 80.0,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(40.0),
+                  color: Colors.blue[800],
+                  image: const DecorationImage(
+                      image: NetworkImage(
+                          'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl-2.jpg'))),
+            ),
+          ]),
+          const SizedBox(height: 8.0),
+          Text(
+            name,
+            style: const TextStyle(
+              fontFamily: 'Quicksand',
+              fontWeight: FontWeight.bold,
+              fontSize: 15.0,
+            ),
+          ),
+          const SizedBox(height: 5.0),
+          Text(
+            address,
+            style: const TextStyle(
                 fontFamily: 'Quicksand',
                 fontWeight: FontWeight.bold,
-                fontSize: 15.0,
-              ),
-            ),
-            SizedBox(height: 5.0),
-            Text(
-              address,
-              style: TextStyle(
-                  fontFamily: 'Quicksand',
-                  fontWeight: FontWeight.bold,
-                  fontSize: 12.0,
-                  color: Colors.grey),
-            ),
-            SizedBox(height: 10.0),
-            Container(
-                width: 175.0,
-                decoration: BoxDecoration(
-                  color: Colors.green,
-                  borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(10.0),
-                      bottomRight: Radius.circular(10.0)),
-                ),
-                child: Center(
-                    child: TextButton(
-                  onPressed: () {},
-                  child: Text(
-                    'View Profile',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontFamily: 'Quicksand',
-                    ),
+                fontSize: 12.0,
+                color: Colors.grey),
+          ),
+          const SizedBox(height: 20.0),
+          Expanded(
+              child: Container(
+                  width: 175.0,
+                  decoration: BoxDecoration(
+                    color: Colors.blue[800],
+                    borderRadius: const BorderRadius.only(
+                        bottomLeft: Radius.circular(10.0),
+                        bottomRight: Radius.circular(10.0)),
                   ),
-                )))
-          ],
-        ),
-        margin: cardIndex.isEven
-            ? EdgeInsets.fromLTRB(10.0, 0.0, 25.0, 10.0)
-            : EdgeInsets.fromLTRB(25.0, 0.0, 5.0, 10.0));
+                  child: Center(
+                      child: TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                NGOProfile(widget.donorId, ngoId)),
+                      );
+                    },
+                    child: const Text(
+                      'View Profile',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'Quicksand',
+                      ),
+                    ),
+                  ))))
+        ],
+      ),
+      margin: cardIndex.isEven
+          ? const EdgeInsets.fromLTRB(10.0, 0.0, 25.0, 10.0)
+          : const EdgeInsets.fromLTRB(25.0, 0.0, 5.0, 10.0),
+    );
   }
 }

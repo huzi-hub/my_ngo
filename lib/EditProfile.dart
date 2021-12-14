@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:my_ngo/Services/donorServices.dart';
 import 'package:my_ngo/models/donorModel.dart';
+import 'package:my_ngo/models/ngoModel.dart';
 import 'Home1.dart';
 import 'main1.dart';
 
@@ -46,6 +47,8 @@ class EditProfile extends StatefulWidget {
 
 class _EditProfileState extends State<EditProfile> {
   List<Donor>? _donors;
+
+  var children;
   Future<void> getDonor() async {
     DonorData donorsData = DonorData('abc@gmail.com', '12345678');
     await donorsData.getDonors().then((donors) => _donors = donors);
@@ -71,7 +74,7 @@ class _EditProfileState extends State<EditProfile> {
           ),
           onPressed: () {
             Navigator.push(
-                context, MaterialPageRoute(builder: (context) => MyApp1()));
+                context, MaterialPageRoute(builder: (context) => MyApp1(1)));
           },
         ),
         elevation: 2,
@@ -143,15 +146,32 @@ class _EditProfileState extends State<EditProfile> {
               SizedBox(
                 height: 45,
               ),
+              // FutureBuilder<List<Donor>>(
+              //   future: _donors,
+              //   builder: (BuildContext context,
+              //       AsyncSnapshot<List<Donor>> snapshot) {
+              //     if (snapshot.hasData) {
+              //       return buildTextField(
+              //           "Full Name", snapshot.data![0].username, false);
+              //     } else if (snapshot.hasError) {
+              //       return Text('Error: ${snapshot.error}');
+              //     }
+              //     return Center(
+              //         child: Column(
+              //       mainAxisAlignment: MainAxisAlignment.center,
+              //       children: children,
+              //     ));
+              //   },
+              // ),
               buildTextField("Full Name", _donors![0].username, false),
               SizedBox(
                 height: 25,
               ),
-              buildTextField("Email", _donors![0].email, false),
+              //buildTextField("Email", _donors![0].email, false),
               SizedBox(
                 height: 25,
               ),
-              buildTextField("Password", _donors![0].password, true),
+              //buildTextField("Password", _donors![0].password, true),
               SizedBox(
                 height: 40,
               ),

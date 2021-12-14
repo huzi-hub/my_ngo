@@ -23,7 +23,7 @@ class Donor {
   String username;
   String email;
   String password;
-  String address = 'address';
+  String address;
   String contact;
   factory Donor.fromJson(Map<String, dynamic> json) => Donor(
         userId: json["user_id"],
