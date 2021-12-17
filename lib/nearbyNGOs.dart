@@ -2,35 +2,49 @@
 
 import 'dart:async';
 import 'dart:convert';
-
+import 'package:geolocator/geolocator.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:my_ngo/headingWidget.dart';
 import 'package:my_ngo/models/ngoModel.dart';
-
+import 'package:geocoding/geocoding.dart';
 import 'ngoProfile.dart';
 
-Future<List<Ngos>> fetchPhotos(http.Client client) async {
+Future<List<Ngos>> fetchNGOs(http.Client client) async {
   final response = await client
       .get(Uri.parse('https://edonations.000webhostapp.com/api-ngo.php'));
 
-  // Use the compute function to run parsePhotos in a separate isolate.
+  // Use the compute function to run parseNgos in a separate isolate.
   return compute(parseNgos, response.body);
 }
 
-// A function that converts a response body into a List<Photo>.
+// A function that converts a response body into a List<Ngos>.
 List<Ngos> parseNgos(String responseBody) {
   final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
 
   return parsed.map<Ngos>((json) => Ngos.fromJson(json)).toList();
 }
 
-class NearbyNgos extends StatelessWidget {
+class NearbyNgos extends StatefulWidget {
   int donorId;
   NearbyNgos(this.donorId);
   @override
+  State<NearbyNgos> createState() => _NearbyNgosState();
+}
+
+int distance = 0;
+
+class _NearbyNgosState extends State<NearbyNgos> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    print(distance);
     return Scaffold(
       body: ListView(
         children: [
@@ -53,14 +67,14 @@ class NearbyNgos extends StatelessWidget {
             height: MediaQuery.of(context).size.height * 0.8,
             margin: const EdgeInsets.only(top: 10),
             child: FutureBuilder<List<Ngos>>(
-              future: fetchPhotos(http.Client()),
+              future: fetchNGOs(http.Client()),
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
                   return const Center(
                     child: Text('An error has occurred!'),
                   );
                 } else if (snapshot.hasData) {
-                  return NgoList(donorId: donorId, ngo: snapshot.data!);
+                  return NgoList(donorId: widget.donorId, ngo: snapshot.data!);
                 } else {
                   return const Center(
                     child: CircularProgressIndicator(),
@@ -75,6 +89,11 @@ class NearbyNgos extends StatelessWidget {
   }
 }
 
+Position? _currentUserPosition;
+double? distanceImMeter = 0.0;
+List<Ngos> ngodata = [];
+//int distance = 0;
+
 class NgoList extends StatefulWidget {
   const NgoList({Key? key, required this.ngo, required this.donorId})
       : super(key: key);
@@ -88,20 +107,30 @@ class NgoList extends StatefulWidget {
 class _NgoListState extends State<NgoList> {
   @override
   Widget build(BuildContext context) {
+    var distance = 0;
     return GridView.builder(
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-      ),
-      itemCount: widget.ngo.length,
-      itemBuilder: (context, index) {
-        //print(donorId);
-        return buildCard(widget.ngo[index].ngoName, widget.ngo[index].address,
-            int.parse(widget.ngo[index].ngoId), index);
-      },
-    );
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+        ),
+        itemCount: widget.ngo.length,
+        itemBuilder: (context, index) {
+          var distance = calculateDistance(widget.ngo[index].address);
+          print('Distance is : ${distance}');
+          if (distance > 0) {
+            return buildCard(
+                widget.ngo[index].ngoName,
+                widget.ngo[index].address,
+                int.parse(widget.ngo[index].ngoId),
+                index,
+                distance);
+          } else {
+            return SizedBox();
+          }
+        });
   }
 
-  Widget buildCard(String name, String address, int ngoId, int cardIndex) {
+  Widget buildCard(
+      String name, String address, int ngoId, int cardIndex, int distance) {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
       elevation: 7.0,
@@ -110,8 +139,8 @@ class _NgoListState extends State<NgoList> {
           const SizedBox(height: 12.0),
           Stack(children: <Widget>[
             Container(
-              height: 80.0,
-              width: 80.0,
+              height: MediaQuery.of(context).size.height * 0.1,
+              width: MediaQuery.of(context).size.height * 0.1,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(40.0),
                   color: Colors.blue[800],
@@ -121,27 +150,31 @@ class _NgoListState extends State<NgoList> {
             ),
           ]),
           const SizedBox(height: 8.0),
-          Text(
-            name,
-            style: const TextStyle(
-              fontFamily: 'Quicksand',
-              fontWeight: FontWeight.bold,
-              fontSize: 15.0,
+          FittedBox(
+            child: Text(
+              name,
+              style: const TextStyle(
+                fontFamily: 'Quicksand',
+                fontWeight: FontWeight.bold,
+                fontSize: 15.0,
+              ),
             ),
           ),
           const SizedBox(height: 5.0),
-          Text(
-            address,
-            style: const TextStyle(
-                fontFamily: 'Quicksand',
-                fontWeight: FontWeight.bold,
-                fontSize: 12.0,
-                color: Colors.grey),
+          FittedBox(
+            child: Text(
+              address,
+              style: const TextStyle(
+                  fontFamily: 'Quicksand',
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12.0,
+                  color: Colors.grey),
+            ),
           ),
           const SizedBox(height: 20.0),
           Expanded(
               child: Container(
-                  width: 175.0,
+                  width: MediaQuery.of(context).size.width,
                   decoration: BoxDecoration(
                     color: Colors.blue[800],
                     borderRadius: const BorderRadius.only(
@@ -173,4 +206,24 @@ class _NgoListState extends State<NgoList> {
           : const EdgeInsets.fromLTRB(25.0, 0.0, 5.0, 10.0),
     );
   }
+}
+
+int calculateDistance(String address) {
+  int distance;
+  locationFromAddress(address).then((result) async {
+    _currentUserPosition = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    double storelat = result[0].latitude;
+    double storelng = result[0].longitude;
+    distanceImMeter = Geolocator.distanceBetween(
+      _currentUserPosition!.latitude,
+      _currentUserPosition!.longitude,
+      storelat,
+      storelng,
+    );
+  });
+  distance = distanceImMeter!.round().toInt();
+  distance = (distance / 1000).round().toInt();
+  print(distance);
+  return distance;
 }
