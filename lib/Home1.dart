@@ -134,129 +134,129 @@ class HomePages extends StatelessWidget {
                         ],
                       ),
                     ), //food doation
-                    Container(
-                      height: 150,
-                      width: double.infinity,
-                      child: Column(
-                        children: [
-                          Card(
-                            color: Colors.white,
-                            margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                            child: Container(
-                              height: 130,
-                              width: 280,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                                    height: 120,
-                                    color: Colors.white,
-                                    width: 240,
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Container(
-                                          height: 90,
-                                          decoration: BoxDecoration(
-                                              image: DecorationImage(
-                                                  fit: BoxFit.cover,
-                                                  image: AssetImage(
-                                                    'assets/pic3.jpg',
-                                                  ))),
-                                        ),
-                                        InkWell(
-                                          child: Text(
+                    InkWell(
+                      child: Container(
+                        height: 150,
+                        width: double.infinity,
+                        child: Column(
+                          children: [
+                            Card(
+                              color: Colors.white,
+                              margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              child: Container(
+                                height: 130,
+                                width: 280,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                                      height: 120,
+                                      color: Colors.white,
+                                      width: 240,
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Container(
+                                            height: 90,
+                                            decoration: BoxDecoration(
+                                                image: DecorationImage(
+                                                    fit: BoxFit.cover,
+                                                    image: AssetImage(
+                                                      'assets/pic3.jpg',
+                                                    ))),
+                                          ),
+                                          Text(
                                             'Donate Clothes',
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold),
                                           ),
-                                          onTap: () {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        NearbyNgos(donorId,
-                                                            'clothes')));
-                                          },
-                                        )
-                                      ],
-                                    ),
-                                  )
-                                ],
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
                               ),
-                            ),
-                          )
-                        ],
+                            )
+                          ],
+                        ),
                       ),
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    NearbyNgos(donorId, 'clothes')));
+                      },
                     ),
-                    Container(
-                      height: 180,
-                      width: double.infinity,
-                      child: Column(
-                        children: [
-                          Card(
-                            color: Colors.white,
-                            margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                            child: Container(
-                              height: 130,
-                              width: 280,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    color: Colors.white,
-
-                                    padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                                    height: 120,
-
-                                    //color if needed
-
-                                    width: 240,
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Container(
-                                          height: 90,
-                                          decoration: BoxDecoration(
-                                              image: DecorationImage(
-                                                  fit: BoxFit.cover,
-                                                  image: AssetImage(
-                                                    'assets/pic.jpg',
-                                                  ))),
-                                        ),
-                                        InkWell(
-                                          child: Text(
-                                            'Donate Books',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          onTap: () {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        NearbyNgos(
-                                                            donorId, 'books')));
-                                          },
-                                        )
-                                      ],
-                                    ),
-                                  )
-                                ],
+                    InkWell(
+                      child: Container(
+                        height: 180,
+                        width: double.infinity,
+                        child: Column(
+                          children: [
+                            Card(
+                              color: Colors.white,
+                              margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
                               ),
-                            ),
-                          )
-                        ],
+                              child: Container(
+                                height: 130,
+                                width: 280,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      color: Colors.white,
+
+                                      padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                                      height: 120,
+
+                                      //color if needed
+
+                                      width: 240,
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Container(
+                                            height: 90,
+                                            decoration: BoxDecoration(
+                                                image: DecorationImage(
+                                                    fit: BoxFit.cover,
+                                                    image: AssetImage(
+                                                      'assets/pic.jpg',
+                                                    ))),
+                                          ),
+                                          InkWell(
+                                            child: Text(
+                                              'Donate Books',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
                       ),
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    NearbyNgos(donorId, 'books')));
+                      },
                     ), //book Donation
                   ],
                 ),

@@ -11,9 +11,11 @@ import 'package:my_ngo/models/ngoModel.dart';
 import 'package:geocoding/geocoding.dart';
 import 'ngoProfile.dart';
 
-Future<List<Ngos>> fetchNGOs(http.Client client) async {
-  final response = await client
-      .post(Uri.parse('https://edonations.000webhostapp.com/api-ngo.php'));
+Future<List<Ngos>> fetchNGOs(http.Client client, String fow) async {
+  var data = {'field_of_work': fow};
+  final response = await client.post(
+      Uri.parse('https://edonations.000webhostapp.com/api-ngo.php'),
+      body: jsonEncode(data));
   // Use the compute function to run parseNgos in a separate isolate.
   return compute(parseNgos, response.body);
 }
@@ -65,7 +67,7 @@ class _NearbyNgosState extends State<NearbyNgos> {
             height: MediaQuery.of(context).size.height * 0.8,
             margin: const EdgeInsets.only(top: 10),
             child: FutureBuilder<List<Ngos>>(
-              future: fetchNGOs(http.Client()),
+              future: fetchNGOs(http.Client(), widget.fow),
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
                   return const Center(

@@ -14,6 +14,7 @@ class NGO_Reg extends StatefulWidget {
 class _NGO_RegState extends State<NGO_Reg> {
   String? value;
   final items = ['Karachi', 'Lahore', 'Islamabad', 'Quetta'];
+  final fow = ['food', 'books', 'clothes'];
   final TextEditingController name = TextEditingController();
   final TextEditingController email = TextEditingController();
   final TextEditingController password = TextEditingController();
@@ -21,6 +22,7 @@ class _NGO_RegState extends State<NGO_Reg> {
   final TextEditingController cell = TextEditingController();
   final TextEditingController storage = TextEditingController();
   late String city;
+  late String FOW;
   // final listitem = [
   //   'Karchi', 'Lahore', 'Islamabad', 'Quetta', 'Peshawar'
   // ],
@@ -108,6 +110,25 @@ class _NGO_RegState extends State<NGO_Reg> {
                                   }),
                                 ),
                               ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              Container(
+                                child: DropdownButton<String>(
+                                  hint: Text(
+                                    'Field Of Work',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                  dropdownColor: Color(0xff8CA1A5),
+                                  value: value,
+                                  items: fow.map(buildMenuItem).toList(),
+                                  onChanged: (value) => setState(() {
+                                    this.value = value;
+                                    FOW = value.toString();
+                                    print(FOW);
+                                  }),
+                                ),
+                              )
                             ],
                           ),
                         ),
@@ -191,7 +212,8 @@ class _NGO_RegState extends State<NGO_Reg> {
       'address': address.text,
       'contact': cell.text,
       'storage': int.parse(storage.text),
-      'city': city
+      'city': city,
+      'field_of_work': city
     };
     var result = await http.post(Uri.parse(url), body: jsonEncode(data));
     var msg = jsonDecode(result.body);
