@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:my_ngo/headingWidget.dart';
 import 'package:my_ngo/models/ngoModel.dart';
 import 'package:geocoding/geocoding.dart';
+import 'models/donationsModel.dart';
 import 'ngoProfile.dart';
 
 Future<List<Ngos>> fetchNGOs(http.Client client) async {
@@ -40,7 +41,21 @@ class _NearbyNgosState extends State<NearbyNgos> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    // getData();
   }
+
+  // void getData() async {
+  //   const String url =
+  //       'https://edonations.000webhostapp.com/api-donationhistory.php';
+  //   var data = {'user_id': widget.donorId};
+
+  //   var result = await http.post(Uri.parse(url), body: jsonEncode(data));
+
+  //   List<Donations> tempdata = donationsFromJson(result.body);
+  //   setState(() {
+
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +89,27 @@ class _NearbyNgosState extends State<NearbyNgos> {
                     child: Text('An error has occurred!'),
                   );
                 } else if (snapshot.hasData) {
-                  return NgoList(donorId: widget.donorId, ngo: snapshot.data!);
+                  return GridView.builder(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                      ),
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (context, index) {
+                        var distance =
+                            calculateDistance(snapshot.data![index].address);
+                        print('Distance is : ${distance} ${index}');
+                        if (distance >= 0) {
+                          return buildCard(
+                              snapshot.data![index].ngoName,
+                              snapshot.data![index].address,
+                              snapshot.data![index].ngoId,
+                              index,
+                              distance);
+                        } else {
+                          return SizedBox();
+                        }
+                      });
                 } else {
                   return const Center(
                     child: CircularProgressIndicator(),
@@ -85,6 +120,84 @@ class _NearbyNgosState extends State<NearbyNgos> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget buildCard(
+      String name, String address, String ngoId, int cardIndex, int distance) {
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+      elevation: 7.0,
+      child: Column(
+        children: <Widget>[
+          const SizedBox(height: 12.0),
+          Stack(children: <Widget>[
+            Container(
+              height: MediaQuery.of(context).size.height * 0.1,
+              width: MediaQuery.of(context).size.height * 0.1,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(40.0),
+                  color: Colors.blue[800],
+                  image: const DecorationImage(
+                      image: NetworkImage(
+                          'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl-2.jpg'))),
+            ),
+          ]),
+          const SizedBox(height: 8.0),
+          FittedBox(
+            child: Text(
+              name,
+              style: const TextStyle(
+                fontFamily: 'Quicksand',
+                fontWeight: FontWeight.bold,
+                fontSize: 15.0,
+              ),
+            ),
+          ),
+          const SizedBox(height: 5.0),
+          FittedBox(
+            child: Text(
+              address,
+              style: const TextStyle(
+                  fontFamily: 'Quicksand',
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12.0,
+                  color: Colors.grey),
+            ),
+          ),
+          const SizedBox(height: 20.0),
+          Expanded(
+              child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(
+                    color: Colors.blue[800],
+                    borderRadius: const BorderRadius.only(
+                        bottomLeft: Radius.circular(10.0),
+                        bottomRight: Radius.circular(10.0)),
+                  ),
+                  child: Center(
+                      child: TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                NGOProfile(widget.donorId, int.parse(ngoId))),
+                      );
+                    },
+                    child: const Text(
+                      'View Profile',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'Quicksand',
+                      ),
+                    ),
+                  ))))
+        ],
+      ),
+      margin: cardIndex.isEven
+          ? const EdgeInsets.fromLTRB(10.0, 0.0, 25.0, 10.0)
+          : const EdgeInsets.fromLTRB(25.0, 0.0, 5.0, 10.0),
     );
   }
 }
@@ -107,7 +220,7 @@ class NgoList extends StatefulWidget {
 class _NgoListState extends State<NgoList> {
   @override
   Widget build(BuildContext context) {
-    var distance = 0;
+    //var distance = 0;
     return GridView.builder(
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
@@ -115,7 +228,7 @@ class _NgoListState extends State<NgoList> {
         itemCount: widget.ngo.length,
         itemBuilder: (context, index) {
           var distance = calculateDistance(widget.ngo[index].address);
-          print('Distance is : ${distance}');
+          print('Distance is : ${distance} ${index}');
           if (distance > 0) {
             return buildCard(
                 widget.ngo[index].ngoName,
@@ -209,21 +322,22 @@ class _NgoListState extends State<NgoList> {
 }
 
 int calculateDistance(String address) {
+  int distanceInKm;
   int distance;
   locationFromAddress(address).then((result) async {
     _currentUserPosition = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
-    double storelat = result[0].latitude;
-    double storelng = result[0].longitude;
+    double ngolat = result[0].latitude;
+    double ngolng = result[0].longitude;
     distanceImMeter = Geolocator.distanceBetween(
       _currentUserPosition!.latitude,
       _currentUserPosition!.longitude,
-      storelat,
-      storelng,
+      ngolat,
+      ngolng,
     );
   });
   distance = distanceImMeter!.round().toInt();
-  distance = (distance / 1000).round().toInt();
-  print(distance);
-  return distance;
+  distanceInKm = (distance / 1000).round().toInt();
+  //print(distance);
+  return distanceInKm;
 }

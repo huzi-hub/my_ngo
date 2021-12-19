@@ -22,6 +22,7 @@ class Ngos {
     required this.contact,
     required this.storage,
     required this.city,
+    required this.fieldOfWork,
   });
 
   String ngoId;
@@ -32,16 +33,18 @@ class Ngos {
   String contact;
   String storage;
   String city;
+  String fieldOfWork;
 
   factory Ngos.fromJson(Map<String, dynamic> json) => Ngos(
-        ngoId: json["ngo_id"] as String,
-        ngoName: json["ngo_name"] as String,
-        email: json["email"] as String,
-        password: json["password"] as String,
-        address: json["address"] as String,
-        contact: json["contact"] as String,
+        ngoId: json["ngo_id"],
+        ngoName: json["ngo_name"],
+        email: json["email"],
+        password: json["password"],
+        address: json["address"],
+        contact: json["contact"],
         storage: json["storage"],
-        city: json["city"] as String,
+        city: json["city"],
+        fieldOfWork: json["field_of_work"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -53,5 +56,6 @@ class Ngos {
         "contact": contact,
         "storage": storage,
         "city": city,
+        "field_of_work": fieldOfWork,
       };
 }
