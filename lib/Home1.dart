@@ -119,7 +119,8 @@ class HomePages extends StatelessWidget {
                                                   context,
                                                   MaterialPageRoute(
                                                       builder: (context) =>
-                                                          NearbyNgos(donorId)));
+                                                          NearbyNgos(donorId,
+                                                              'food')));
                                             },
                                           ),
                                         ],
@@ -179,7 +180,8 @@ class HomePages extends StatelessWidget {
                                                 context,
                                                 MaterialPageRoute(
                                                     builder: (context) =>
-                                                        NearbyNgos(donorId)));
+                                                        NearbyNgos(donorId,
+                                                            'clothes')));
                                           },
                                         )
                                       ],
@@ -242,7 +244,8 @@ class HomePages extends StatelessWidget {
                                                 context,
                                                 MaterialPageRoute(
                                                     builder: (context) =>
-                                                        NearbyNgos(donorId)));
+                                                        NearbyNgos(
+                                                            donorId, 'books')));
                                           },
                                         )
                                       ],

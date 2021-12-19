@@ -2,12 +2,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:my_ngo/nearbyNGOs.dart';
-import 'main1.dart';
-import 'confirmDonation.dart';
-import 'nearbyNGOs1.dart';
 
 class AddVolunteer extends StatelessWidget {
-  const AddVolunteer({Key? key}) : super(key: key);
+  final donorId, fow;
+  const AddVolunteer(this.donorId, this.fow);
 
   @override
   Widget build(BuildContext context) {
@@ -113,7 +111,8 @@ class AddVolunteer extends StatelessWidget {
                                                   context,
                                                   MaterialPageRoute(
                                                       builder: (context) =>
-                                                          NearbyNgos(1)));
+                                                          NearbyNgos(
+                                                              donorId, fow)));
                                             },
                                           )
                                         ],
@@ -173,7 +172,8 @@ class AddVolunteer extends StatelessWidget {
                                                 context,
                                                 MaterialPageRoute(
                                                     builder: (context) =>
-                                                        NearbyNgos(1)));
+                                                        NearbyNgos(
+                                                            donorId, fow)));
                                           },
                                         )
                                       ],
@@ -236,7 +236,8 @@ class AddVolunteer extends StatelessWidget {
                                                 context,
                                                 MaterialPageRoute(
                                                     builder: (context) =>
-                                                        NearbyNgos(1)));
+                                                        NearbyNgos(
+                                                            donorId, fow)));
                                           },
                                         )
                                       ],
