@@ -84,13 +84,14 @@ class _NearbyNgosState extends State<NearbyNgos> {
                         var distance =
                             calculateDistance(snapshot.data![index].address);
                         print('Distance is : ${distance} ${index}');
-                        if (distance >= 0) {
+                        if (distance > 0) {
                           return buildCard(
                               snapshot.data![index].ngoName,
                               snapshot.data![index].address,
                               snapshot.data![index].ngoId,
                               index,
-                              distance);
+                              distance,
+                              snapshot.data![index].description);
                         } else {
                           return SizedBox();
                         }
@@ -108,14 +109,14 @@ class _NearbyNgosState extends State<NearbyNgos> {
     );
   }
 
-  Widget buildCard(
-      String name, String address, String ngoId, int cardIndex, int distance) {
+  Widget buildCard(String name, String address, String ngoId, int cardIndex,
+      int distance, String desc) {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
       elevation: 7.0,
       child: Column(
         children: <Widget>[
-          const SizedBox(height: 12.0),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.01),
           Stack(children: <Widget>[
             Container(
               height: MediaQuery.of(context).size.height * 0.1,
@@ -128,7 +129,7 @@ class _NearbyNgosState extends State<NearbyNgos> {
                           'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl-2.jpg'))),
             ),
           ]),
-          const SizedBox(height: 8.0),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.005),
           FittedBox(
             child: Text(
               name,
@@ -139,7 +140,7 @@ class _NearbyNgosState extends State<NearbyNgos> {
               ),
             ),
           ),
-          const SizedBox(height: 5.0),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.005),
           FittedBox(
             child: Text(
               address,
@@ -150,7 +151,7 @@ class _NearbyNgosState extends State<NearbyNgos> {
                   color: Colors.grey),
             ),
           ),
-          const SizedBox(height: 20.0),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.01),
           Expanded(
               child: Container(
                   width: MediaQuery.of(context).size.width,
@@ -166,8 +167,8 @@ class _NearbyNgosState extends State<NearbyNgos> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) =>
-                                NGOProfile(widget.donorId, int.parse(ngoId))),
+                            builder: (context) => NGOProfile(
+                                widget.donorId, int.parse(ngoId), desc, name)),
                       );
                     },
                     child: const Text(
@@ -185,28 +186,30 @@ class _NearbyNgosState extends State<NearbyNgos> {
           : const EdgeInsets.fromLTRB(25.0, 0.0, 5.0, 10.0),
     );
   }
+
+  int calculateDistance(String address) {
+    int distanceInKm;
+    int distance;
+    locationFromAddress(address).then((result) async {
+      _currentUserPosition = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+      double ngolat = result[0].latitude;
+      double ngolng = result[0].longitude;
+      distanceImMeter = Geolocator.distanceBetween(
+        _currentUserPosition!.latitude,
+        _currentUserPosition!.longitude,
+        ngolat,
+        ngolng,
+      );
+    });
+    distance = distanceImMeter!.round().toInt();
+    distanceInKm = (distance / 1000).round().toInt();
+    //print(distance);
+
+    return distanceInKm;
+  }
 }
 
 Position? _currentUserPosition;
 double? distanceImMeter = 0.0;
 List<Ngos> ngodata = [];
-int calculateDistance(String address) {
-  int distanceInKm;
-  int distance;
-  locationFromAddress(address).then((result) async {
-    _currentUserPosition = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
-    double ngolat = result[0].latitude;
-    double ngolng = result[0].longitude;
-    distanceImMeter = Geolocator.distanceBetween(
-      _currentUserPosition!.latitude,
-      _currentUserPosition!.longitude,
-      ngolat,
-      ngolng,
-    );
-  });
-  distance = distanceImMeter!.round().toInt();
-  distanceInKm = (distance / 1000).round().toInt();
-  //print(distance);
-  return distanceInKm;
-}

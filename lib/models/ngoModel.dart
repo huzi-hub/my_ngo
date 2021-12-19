@@ -19,6 +19,7 @@ class Ngos {
     required this.email,
     required this.password,
     required this.address,
+    required this.description,
     required this.contact,
     required this.storage,
     required this.city,
@@ -30,6 +31,7 @@ class Ngos {
   String email;
   String password;
   String address;
+  String description;
   String contact;
   String storage;
   String city;
@@ -41,6 +43,7 @@ class Ngos {
         email: json["email"],
         password: json["password"],
         address: json["address"],
+        description: json["description"],
         contact: json["contact"],
         storage: json["storage"],
         city: json["city"],
@@ -53,6 +56,7 @@ class Ngos {
         "email": email,
         "password": password,
         "address": address,
+        "description": description,
         "contact": contact,
         "storage": storage,
         "city": city,

@@ -1,5 +1,8 @@
 // ignore_for_file: file_names, use_key_in_widget_constructors, prefer_const_constructors, unnecessary_string_interpolations, sized_box_for_whitespace, camel_case_types
 
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:my_ngo/models/ngoModel.dart';
 import './chatScreen.dart';
@@ -9,7 +12,9 @@ import './headingWidget.dart';
 class NGOProfile extends StatefulWidget {
   int donorId;
   int ngoId;
-  NGOProfile(this.donorId, this.ngoId);
+  final desc;
+  final name;
+  NGOProfile(this.donorId, this.ngoId, this.desc, this.name);
   @override
   _NGOProfileState createState() => _NGOProfileState();
 }
@@ -41,7 +46,7 @@ class _NGOProfileState extends State<NGOProfile> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          HeadingWidget('NGO Profile'),
+          HeadingWidget(widget.name),
           Stack(
             children: <Widget>[
               Container(
@@ -100,8 +105,7 @@ class _NGOProfileState extends State<NGOProfile> {
             padding: EdgeInsets.only(left: 10),
             child: RichText(
               text: TextSpan(
-                text:
-                    'Lorem ipsum dolor sit amet, enim posse quo ne, et amet nulla cotidieque his, duo ex justo offendit scribentur. Tritani gubergren vis ad, eu mazim iusto dicit eam. Per ne partem vulputate definitiones. Ludus appellantur theophrastus an mei.Ea salutatus definiebas eum, id cum veri labitur cotidieque. Te mei possim expetenda consulatu, an regione phaedrum sea. Mollis aliquam theophrastus ne vix, cu posse consectetuer quo. Vim at option gubergren, ut pro etiam facilis, ea eos doming repudiare. Ridens deleniti scriptorem eum ea.Dicit aperiam minimum te eum, iisque dolorum perfecto ea has, erant petentium est eu. Mel ad mutat adolescens.',
+                text: widget.desc,
                 style: TextStyle(
                   fontFamily: 'Quicksand',
                   fontSize: 14,
@@ -181,7 +185,7 @@ class SelectedPhoto extends StatelessWidget {
           decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(5.0),
-              boxShadow: [
+              boxShadow: const [
                 BoxShadow(
                     color: Colors.grey, spreadRadius: 1.0, blurRadius: 2.0)
               ]),
@@ -202,11 +206,26 @@ class SelectedPhoto extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new Center(
+    return Center(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: _buildDots(),
       ),
     );
+  }
+
+  Future<List<Ngos>> fetchNGOs(http.Client client, String fow) async {
+    var data = {'field_of_work': fow};
+    final response = await client.post(
+        Uri.parse('https://edonations.000webhostapp.com/api-ngo.php'),
+        body: jsonEncode(data));
+    // Use the compute function to run parseNgos in a separate isolate.
+    return compute(parseNgos, response.body);
+  }
+
+// A function that converts a response body into a List<Ngos>.
+  List<Ngos> parseNgos(String responseBody) {
+    final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
+    return parsed.map<Ngos>((json) => Ngos.fromJson(json)).toList();
   }
 }
