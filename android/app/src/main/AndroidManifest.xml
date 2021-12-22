@@ -3,11 +3,12 @@
     
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
    <application
         android:label="my_ngo"
         android:icon="@mipmap/ic_launcher">
        <meta-data android:name="com.google.android.geo.API_KEY"
-           android:value="AIzaSyD6R5hZvXMbWzMzpkj-OL8GAiuevUuQx-A"/>
+       android:value="AIzaSyAlXxNPTmsJTvW3XCnA7Cx_N21jZf6SFOo"/>
 
         <activity
             android:name=".MainActivity"
@@ -21,7 +22,7 @@
                  while the Flutter UI initializes. After that, this theme continues
                  to determine the Window background behind the Flutter UI. -->
 
-      <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyDwT356nj-dzF85ub-9Kb3yBi2H2C8Sgnw"/>
+      <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyAlXxNPTmsJTvW3XCnA7Cx_N21jZf6SFOo"/>
 
             <meta-data
               android:name="io.flutter.embedding.android.NormalTheme"
